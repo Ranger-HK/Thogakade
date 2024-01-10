@@ -48,12 +48,12 @@ DESCRIBE Item;
 /*Associate Table create -- > OrderDetail*/
 DROP TABLE IF EXISTS OrderDetail;
 CREATE TABLE IF NOT EXISTS OrderDetail(
-    itemcode VARCHAR (15),
+    itemCode VARCHAR (15),
     orderDetailId VARCHAR (15),
     qty INT,
     price DOUBLE DEFAULT 0.00,
-    CONSTRAINT PRIMARY KEY (itemcode,orderDetailId),
-    CONSTRAINT FOREIGN KEY (itemcode) REFERENCES Item(code) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT PRIMARY KEY (itemCode,orderDetailId),
+    CONSTRAINT FOREIGN KEY (itemCode) REFERENCES Item(code) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT FOREIGN KEY (orderDetailId) REFERENCES `Order`(orderId) ON DELETE CASCADE ON UPDATE CASCADE
     );
 SHOW TABLES;
