@@ -3,6 +3,7 @@ DROP DATABASE IF EXISTS Thogakade;
 CREATE DATABASE IF NOT EXISTS Thogakade;
 SHOW DATABASES;
 USE Thogakade;
+SHOW TABLES;
 
 /*Customer Table create*/
 DROP TABLE IF EXISTS Customer;
