@@ -28,7 +28,7 @@ public class DashBoardFormController {
         Parent load = FXMLLoader.load(resource);
         Scene scene = new Scene(load);
         Stage stage = new Stage();
-        stage.setTitle("Customer Form");
+        stage.setTitle("Customer Save Form");
         stage.setScene(scene);
         stage.show();
     }
@@ -39,7 +39,14 @@ public class DashBoardFormController {
     public void customerDeleteOnAction(ActionEvent actionEvent) {
     }
 
-    public void customerSearchOnAction(ActionEvent actionEvent) {
+    public void customerSearchOnAction(ActionEvent actionEvent) throws IOException {
+        URL resource = getClass().getResource("../view/CustomerSearchForm.fxml");
+        Parent load = FXMLLoader.load(resource);
+        Scene scene = new Scene(load);
+        Stage stage = new Stage();
+        stage.setTitle("Customer Search Form");
+        stage.setScene(scene);
+        stage.show();
     }
 
     public void customerSelectAllOnAction(ActionEvent actionEvent) {
