@@ -3,6 +3,9 @@ package controller;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import javafx.event.ActionEvent;
+import javafx.scene.control.Alert;
+
+import java.sql.*;
 
 /**
  * @Created By Ravindu Prathibha
@@ -18,6 +21,38 @@ public class CustomerSearchFromController {
     public JFXButton btnSearchCustomer;
 
     public void SearchCusOnAction(ActionEvent actionEvent) {
+        String customerId=txtCustomerId.getText();
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/Thogakade",
+                    "root",
+                    "19990202Ravi@:&pra"
+            );
+            Statement statement = connection.createStatement();
+
+            String query = "SELECT * FROM Customer WHERE customerId='"+customerId+"'";
+            ResultSet resultSet = statement.executeQuery(query);
+
+            if (resultSet.next()){
+                String tempId = resultSet.getString(1);
+                String tempName = resultSet.getString(2);
+                String tempAddress = resultSet.getString(3);
+                double tempSalary = resultSet.getDouble(4);
+
+                txtCustomerId.setText(tempId);
+                txtCustomerName.setText(tempName);
+                txtCustomerAddress.setText(tempAddress);
+                txtCustomerSalary.setText(String.valueOf(tempSalary));
+            }else {
+                new Alert(Alert.AlertType.WARNING,"Empty Result set ").show();
+            }
+
+
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 
