@@ -23,10 +23,10 @@ public class CustomerSaveFormController {
     public JFXButton btnSaveCustomer;
 
     public void SaveCusOnAction(ActionEvent actionEvent) {
-        String id=txtCustomerId.getText();
-        String name=txtCustomerName.getText();
-        String address=txtCustomerAddress.getText();
-        double salary=Double.parseDouble(txtCustomerSalary.getText());
+        String id = txtCustomerId.getText();
+        String name = txtCustomerName.getText();
+        String address = txtCustomerAddress.getText();
+        double salary = Double.parseDouble(txtCustomerSalary.getText());
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -37,15 +37,14 @@ public class CustomerSaveFormController {
             );
             Statement statement = connection.createStatement();
 
-            String sql = "INSERT INTO Customer VALUES ("+"'"+id+"'"+","+"'"+name+"'"+","+"'"+address+"'"+","+"'"+salary+"'"+")";
+            String sql = "INSERT INTO Customer VALUES (" + "'" + id + "'" + "," + "'" + name + "'" + "," + "'" + address + "'" + "," + "'" + salary + "'" + ")";
             int i = statement.executeUpdate(sql);
-            if (i>0){
+            if (i > 0) {
                 System.out.println("Saved");
                 txtClear();
-            }else {
+            } else {
                 System.out.println("Try Again..");
             }
-
 
 
         } catch (ClassNotFoundException | SQLException e) {
@@ -68,7 +67,7 @@ public class CustomerSaveFormController {
 
     }
 
-    public void txtClear(){
+    public void txtClear() {
         txtCustomerId.clear();
         txtCustomerName.clear();
         txtCustomerAddress.clear();
