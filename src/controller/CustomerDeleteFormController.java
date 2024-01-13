@@ -19,8 +19,8 @@ public class CustomerDeleteFormController {
     public JFXTextField txtCustomerSalary;
     public JFXButton btnDeleteCustomer;
 
-    public void DeleteCusOnAction(ActionEvent actionEvent) {
-        try {
+    public void DeleteCusOnAction(ActionEvent actionEvent) throws ClassNotFoundException, SQLException {
+      /*  try {
 
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection(
@@ -46,11 +46,52 @@ public class CustomerDeleteFormController {
 
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
+        }*/
+
+        try {
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/Thogakade",
+                    "root",
+                    "19990202Ravi@:&pra"
+            );
+            String query = "DELETE FROM Customer WHERE customerId=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setObject(1,txtCustomerId.getText());
+
+            if ( preparedStatement.executeUpdate()>0){
+                new Alert(Alert.AlertType.CONFIRMATION,"Delete Successful").show();
+                txtClear();
+
+            }else {
+
+                new Alert(Alert.AlertType.WARNING,"Try Again...").show();
+            }
+
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
         }
+
+
+            /*Class.forName("com.mysql.cj.jdbc.Driver");
+            if (DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/Thogakade",
+                    "root",
+                    "19990202Ravi@:&pra"
+            ).prepareStatement("DELETE FROM Customer WHERE customerId='"+txtCustomerId.getText()+"'").executeUpdate()>0){
+
+                new Alert(Alert.AlertType.CONFIRMATION,"Delete Successful").show();
+                txtClear();
+
+            }else {
+
+                new Alert(Alert.AlertType.WARNING,"Try Again...").show();
+            }*/
     }
 
     public void customerSearchOnAction(ActionEvent actionEvent) {
-        try {
+        /*try {
 
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection(
@@ -72,6 +113,32 @@ public class CustomerDeleteFormController {
                 new Alert(Alert.AlertType.WARNING,"Try Again...").show();
             }
 
+
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+*/
+        try {
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection = DriverManager.getConnection(
+                    "jdbc:mysql://127.0.0.1:3306/Thogakade",
+                    "root",
+                    "19990202Ravi@:&pra"
+            );
+            String query ="SELECT * FROM Customer WHERE customerId=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setObject(1,txtCustomerId.getText());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()){
+                txtCustomerId.setText(resultSet.getString(1));
+                txtCustomerName.setText(resultSet.getString(2));
+                txtCustomerAddress.setText(resultSet.getString(3));
+                txtCustomerSalary.setText(String.valueOf(resultSet.getDouble(4)));
+            }else {
+                new Alert(Alert.AlertType.WARNING,"Empty Result set ").show();
+            }
 
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
