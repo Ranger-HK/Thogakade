@@ -25,7 +25,7 @@ public class CustomerUpdateFormController {
         String tempAddress = txtCustomerAddress.getText();
         Double tempSalary=Double.parseDouble(txtCustomerSalary.getText());
 
-        try {
+        /*try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/Thogakade",
@@ -46,11 +46,38 @@ public class CustomerUpdateFormController {
 
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
+        }*/
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/Thogakade",
+                    "root",
+                    "19990202Ravi@:&pra"
+            );
+            String query = "UPDATE Customer SET name=?,address=?,salary=? WHERE customerId=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setObject(1,tempName);
+            preparedStatement.setObject(2,tempAddress);
+            preparedStatement.setObject(3,tempSalary);
+            preparedStatement.setObject(4,tempId);
+
+            if (preparedStatement.executeUpdate()>0){
+                new Alert(Alert.AlertType.CONFIRMATION,"Update Successful").show();
+                txtClear();
+
+            }else {
+                new Alert(Alert.AlertType.WARNING,"Try Again...");
+
+            }
+
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
         }
     }
 
     public void loadCustomerOnAction(ActionEvent actionEvent) {
-        try {
+       /* try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/Thogakade",
@@ -60,6 +87,34 @@ public class CustomerUpdateFormController {
             Statement statement = connection.createStatement();
             String query ="SELECT * FROM Customer WHERE customerId='"+txtCustomerId.getText()+"'";
             ResultSet resultSet = statement.executeQuery(query);
+
+            if (resultSet.next()){
+                txtCustomerName.setText(resultSet.getString(2));
+                txtCustomerAddress.setText(resultSet.getString(3));
+                txtCustomerSalary.setText(String.valueOf(resultSet.getDouble(4)));
+                txtCustomerName.requestFocus();
+
+            }else {
+
+                new Alert(Alert.AlertType.WARNING,"Try Again").show();
+
+            }
+
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }*/
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/Thogakade",
+                    "root",
+                    "19990202Ravi@:&pra"
+            );
+            String query ="SELECT * FROM Customer WHERE customerId=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setObject(1,txtCustomerId.getText());
+            ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()){
                 txtCustomerName.setText(resultSet.getString(2));

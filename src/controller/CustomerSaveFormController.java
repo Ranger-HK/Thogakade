@@ -65,6 +65,7 @@ public class CustomerSaveFormController {
 
             if (preparedStatement.executeUpdate()>0){
                 new Alert(Alert.AlertType.CONFIRMATION,"Customer Saved").show();
+                txtClear();
 
             }else {
                 new Alert(Alert.AlertType.WARNING,"Try Again").show();
