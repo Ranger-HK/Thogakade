@@ -3,11 +3,9 @@ package controller;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import javafx.event.ActionEvent;
+import javafx.scene.control.Alert;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 /**
  * @Created By Ravindu Prathibha
@@ -28,7 +26,7 @@ public class CustomerSaveFormController {
         String address = txtCustomerAddress.getText();
         double salary = Double.parseDouble(txtCustomerSalary.getText());
 
-        try {
+      /*  try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/Thogakade",
@@ -49,7 +47,33 @@ public class CustomerSaveFormController {
 
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
+        }*/
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/Thogakade",
+                    "root",
+                    "19990202Ravi@:&pra"
+            );
+            String query = "INSERT INTO Customer VALUES (?,?,?,?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setObject(1,id);
+            preparedStatement.setObject(2,name);
+            preparedStatement.setObject(3,address);
+            preparedStatement.setObject(4,salary);
+
+            if (preparedStatement.executeUpdate()>0){
+                new Alert(Alert.AlertType.CONFIRMATION,"Customer Saved").show();
+
+            }else {
+                new Alert(Alert.AlertType.WARNING,"Try Again").show();
+
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
         }
+
 
     }
 
