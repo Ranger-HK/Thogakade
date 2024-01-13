@@ -64,3 +64,8 @@ DESCRIBE Customer;
 DESCRIBE `Order`;
 DESCRIBE Item;
 DESCRIBE OrderDetail;
+
+SELECT * FROM Customer;
+SELECT * FROM `Order`;
+SELECT * FROM Item;
+SELECT * FROM OrderDetail;

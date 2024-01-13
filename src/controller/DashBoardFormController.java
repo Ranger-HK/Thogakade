@@ -33,7 +33,14 @@ public class DashBoardFormController {
         stage.show();
     }
 
-    public void customerUpdateOnAction(ActionEvent actionEvent) {
+    public void customerUpdateOnAction(ActionEvent actionEvent) throws IOException {
+        URL resource = getClass().getResource("../view/CustomerUpdateForm.fxml");
+        Parent load = FXMLLoader.load(resource);
+        Scene scene = new Scene(load);
+        Stage stage = new Stage();
+        stage.setTitle("Customer Update Form");
+        stage.setScene(scene);
+        stage.show();
     }
 
     public void customerDeleteOnAction(ActionEvent actionEvent) throws IOException {
