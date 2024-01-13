@@ -38,7 +38,7 @@ public class SelectAllCustomerFormController {
     }
 
     private void loadAllCustomers() throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
+       /* Class.forName("com.mysql.cj.jdbc.Driver");
         Connection connection = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/Thogakade",
                 "root",
@@ -58,8 +58,30 @@ public class SelectAllCustomerFormController {
             ));
 
         }
+        tblCustomer.setItems(observableList);*/
+
+
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection connection = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/Thogakade",
+                "root",
+                "19990202Ravi@:&pra"
+        );
+        String query = "SELECT * FROM Customer";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        ObservableList<CustomerTM> observableList = FXCollections.observableArrayList();
+
+        while (resultSet.next()){
+            observableList.add(new CustomerTM(
+                    resultSet.getString(1),
+                    resultSet.getString(2),
+                    resultSet.getString(3),
+                    resultSet.getDouble(4)
+            ));
+
+        }
         tblCustomer.setItems(observableList);
     }
-
 
 }
