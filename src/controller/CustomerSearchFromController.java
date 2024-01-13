@@ -23,7 +23,7 @@ public class CustomerSearchFromController {
     public void SearchCusOnAction(ActionEvent actionEvent) {
         String customerId=txtCustomerId.getText();
 
-        try {
+     /*   try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/Thogakade",
@@ -52,7 +52,33 @@ public class CustomerSearchFromController {
 
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
+        }*/
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/Thogakade",
+                    "root",
+                    "19990202Ravi@:&pra"
+            );
+            String query ="SELECT * FROM Customer WHERE customerId=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setObject(1,customerId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()){
+                txtCustomerId.setText(resultSet.getString(1));
+                txtCustomerName.setText(resultSet.getString(2));
+                txtCustomerAddress.setText(resultSet.getString(3));
+                txtCustomerSalary.setText(String.valueOf(resultSet.getDouble(4)));
+            }else {
+                new Alert(Alert.AlertType.WARNING,"Empty Result set ").show();
+            }
+
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
         }
+
 
     }
 
