@@ -63,10 +63,18 @@ public class DashBoardFormController {
         stage.show();
     }
 
-    public void customerSelectAllOnAction(ActionEvent actionEvent) {
+    public void customerSelectAllOnAction(ActionEvent actionEvent) throws IOException {
+        URL resource = getClass().getResource("../view/SelectAllCustomerForm.fxml");
+        Parent load = FXMLLoader.load(resource);
+        Scene scene = new Scene(load);
+        Stage stage = new Stage();
+        stage.setTitle("All Customer Select Form");
+        stage.setScene(scene);
+        stage.show();
     }
 
-    public void customerPlaceOrderlOnAction(ActionEvent actionEvent) {
+
+    public void customerPlaceOrderOnAction(ActionEvent actionEvent) {
     }
 }
 

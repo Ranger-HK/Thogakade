@@ -54,7 +54,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </JFXButton>
-      <JFXButton fx:id="btnPlaceOrder" buttonType="RAISED" layoutX="266.0" layoutY="398.0" onAction="#customerPlaceOrderlOnAction" prefHeight="44.0" prefWidth="300.0" style="-fx-background-color: #FFC312;" text="Place Order Form">
+      <JFXButton fx:id="btnPlaceOrder" buttonType="RAISED" layoutX="266.0" layoutY="398.0" onAction="#customerPlaceOrderOnAction" prefHeight="44.0" prefWidth="300.0" style="-fx-background-color: #FFC312;" text="Place Order Form">
          <font>
             <Font size="18.0" />
          </font>
