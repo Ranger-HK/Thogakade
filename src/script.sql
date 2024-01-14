@@ -1,6 +1,7 @@
 /*Database  create*/
 DROP DATABASE IF EXISTS Thogakade;
 CREATE DATABASE IF NOT EXISTS Thogakade;
+
 SHOW DATABASES;
 USE Thogakade;
 SHOW TABLES;

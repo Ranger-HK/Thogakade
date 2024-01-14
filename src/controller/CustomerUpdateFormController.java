@@ -5,6 +5,7 @@ import com.jfoenix.controls.JFXTextField;
 import db.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
+import model.Customer;
 
 import java.sql.*;
 
@@ -20,99 +21,27 @@ public class CustomerUpdateFormController {
     public JFXTextField txtCustomerSalary;
     public JFXButton btnUpdateCustomer;
 
-    public void updateCusOnAction(ActionEvent actionEvent) {
-        String tempId = txtCustomerId.getText();
-        String tempName = txtCustomerName.getText();
-        String tempAddress = txtCustomerAddress.getText();
-        Double tempSalary=Double.parseDouble(txtCustomerSalary.getText());
+    public void updateCusOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
+        Customer c1=new Customer(
+                txtCustomerId.getText(),
+                txtCustomerName.getText(),
+                txtCustomerAddress.getText(),
+                Double.parseDouble(txtCustomerSalary.getText())
+        );
 
-        /*try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/Thogakade",
-                    "root",
-                    "19990202Ravi@:&pra"
-            );
-            Statement statement = connection.createStatement();
-            String query = "UPDATE Customer SET name='"+tempName+"',address='"+tempAddress+"',salary='"+tempSalary+"' WHERE customerId='"+tempId+"'";
+        if (updateCus(c1)) {
+            new Alert(Alert.AlertType.CONFIRMATION, "Update Successful").show();
+            txtClear();
 
-            if (statement.executeUpdate(query)>0){
-                new Alert(Alert.AlertType.CONFIRMATION,"Update Successful").show();
-                txtClear();
+        } else {
+            new Alert(Alert.AlertType.WARNING, "Try Again...");
 
-            }else {
-                new Alert(Alert.AlertType.WARNING,"Try Again...");
-
-            }
-
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }*/
-
-        try {
-           /* Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/Thogakade",
-                    "root",
-                    "19990202Ravi@:&pra"
-            );*/
-            Connection connection = DBConnection.getInstance().getConnection();
-            String query = "UPDATE Customer SET name=?,address=?,salary=? WHERE customerId=?";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setObject(1,tempName);
-            preparedStatement.setObject(2,tempAddress);
-            preparedStatement.setObject(3,tempSalary);
-            preparedStatement.setObject(4,tempId);
-
-            if (preparedStatement.executeUpdate()>0){
-                new Alert(Alert.AlertType.CONFIRMATION,"Update Successful").show();
-                txtClear();
-
-            }else {
-                new Alert(Alert.AlertType.WARNING,"Try Again...");
-
-            }
-
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
         }
+
     }
 
     public void loadCustomerOnAction(ActionEvent actionEvent) {
-       /* try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/Thogakade",
-                    "root",
-                    "19990202Ravi@:&pra"
-            );
-            Statement statement = connection.createStatement();
-            String query ="SELECT * FROM Customer WHERE customerId='"+txtCustomerId.getText()+"'";
-            ResultSet resultSet = statement.executeQuery(query);
-
-            if (resultSet.next()){
-                txtCustomerName.setText(resultSet.getString(2));
-                txtCustomerAddress.setText(resultSet.getString(3));
-                txtCustomerSalary.setText(String.valueOf(resultSet.getDouble(4)));
-                txtCustomerName.requestFocus();
-
-            }else {
-
-                new Alert(Alert.AlertType.WARNING,"Try Again").show();
-
-            }
-
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }*/
-
         try {
-            /*Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/Thogakade",
-                    "root",
-                    "19990202Ravi@:&pra"
-            );*/
             Connection connection = DBConnection.getInstance().getConnection();
             String query ="SELECT * FROM Customer WHERE customerId=?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -120,10 +49,14 @@ public class CustomerUpdateFormController {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()){
-                txtCustomerName.setText(resultSet.getString(2));
-                txtCustomerAddress.setText(resultSet.getString(3));
-                txtCustomerSalary.setText(String.valueOf(resultSet.getDouble(4)));
-                txtCustomerName.requestFocus();
+                Customer customer = new Customer(
+                        resultSet.getString(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getDouble(4)
+
+                );
+                setData(customer);
 
             }else {
 
@@ -136,6 +69,24 @@ public class CustomerUpdateFormController {
         }
     }
 
+    void setData(Customer customer){
+        txtCustomerId.setText(customer.getCustomerId());
+        txtCustomerName.setText(customer.getName());
+        txtCustomerAddress.setText(customer.getAddress());
+        txtCustomerSalary.setText(String.valueOf(customer.getSalary()));
+    }
+
+    boolean updateCus(Customer customer) throws SQLException, ClassNotFoundException {
+        Connection connection = DBConnection.getInstance().getConnection();
+        String query = "UPDATE Customer SET name=?,address=?,salary=? WHERE customerId=?";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setObject(1,customer.getName());
+        preparedStatement.setObject(2,customer.getAddress());
+        preparedStatement.setObject(3,customer.getSalary());
+        preparedStatement.setObject(4,customer.getCustomerId());
+
+        return preparedStatement.executeUpdate()>0;
+    }
 
     public void moveAddressOnAction(ActionEvent actionEvent) {
         txtCustomerAddress.requestFocus();

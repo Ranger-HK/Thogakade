@@ -74,7 +74,15 @@ public class DashBoardFormController {
     }
 
 
-    public void customerPlaceOrderOnAction(ActionEvent actionEvent) {
+    public void customerPlaceOrderOnAction(ActionEvent actionEvent) throws IOException {
+        URL resource = getClass().getResource("");
+        Parent load = FXMLLoader.load(resource);
+        Scene scene = new Scene(load);
+        Stage stage = new Stage();
+        stage.setTitle("Place Customer Form");
+        stage.setScene(scene);
+        stage.show();
+
     }
 }
 

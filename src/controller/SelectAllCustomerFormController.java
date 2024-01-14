@@ -6,9 +6,11 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import model.Customer;
 import view.tm.CustomerTM;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 /**
  * @Created By Ravindu Prathibha
@@ -38,44 +40,15 @@ public class SelectAllCustomerFormController {
         }
     }
 
-    private void loadAllCustomers() throws ClassNotFoundException, SQLException {
-       /* Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection connection = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/Thogakade",
-                "root",
-                "19990202Ravi@:&pra"
-        );
-        Statement statement = connection.createStatement();
-        String query = "SELECT * FROM Customer";
-        ResultSet resultSet = statement.executeQuery(query);
-        ObservableList<CustomerTM> observableList = FXCollections.observableArrayList();
-
-        while (resultSet.next()){
-            observableList.add(new CustomerTM(
-                   resultSet.getString(1),
-                   resultSet.getString(2),
-                   resultSet.getString(3),
-                   resultSet.getDouble(4)
-            ));
-
-        }
-        tblCustomer.setItems(observableList);*/
-
-
-       /* Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection connection = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/Thogakade",
-                "root",
-                "19990202Ravi@:&pra"
-        );*/
+    private void loadAllCustomers() throws ClassNotFoundException, SQLException {   
         Connection connection = DBConnection.getInstance().getConnection();
         String query = "SELECT * FROM Customer";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         ResultSet resultSet = preparedStatement.executeQuery();
-        ObservableList<CustomerTM> observableList = FXCollections.observableArrayList();
+        ArrayList<Customer> customers = new ArrayList<>();
 
         while (resultSet.next()){
-            observableList.add(new CustomerTM(
+            customers.add(new Customer(
                     resultSet.getString(1),
                     resultSet.getString(2),
                     resultSet.getString(3),
@@ -83,6 +56,14 @@ public class SelectAllCustomerFormController {
             ));
 
         }
+        setCustomersToTable(customers);
+    }
+
+    private void setCustomersToTable(ArrayList<Customer> customers) {
+        ObservableList<CustomerTM> observableList = FXCollections.observableArrayList();
+        customers.forEach(e->{
+            observableList.add(new CustomerTM(e.getCustomerId(),e.getName(),e.getAddress(),e.getSalary()));
+        });
         tblCustomer.setItems(observableList);
     }
 

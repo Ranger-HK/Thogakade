@@ -5,6 +5,7 @@ import com.jfoenix.controls.JFXTextField;
 import db.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
+import model.Customer;
 
 import java.sql.*;
 
@@ -21,47 +22,9 @@ public class CustomerSearchFromController {
     public JFXTextField txtCustomerSalary;
     public JFXButton btnSearchCustomer;
 
-    public void SearchCusOnAction(ActionEvent actionEvent) {
+    public void SearchCusOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
         String customerId=txtCustomerId.getText();
 
-     /*   try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/Thogakade",
-                    "root",
-                    "19990202Ravi@:&pra"
-            );
-            Statement statement = connection.createStatement();
-
-            String query = "SELECT * FROM Customer WHERE customerId='"+customerId+"'";
-            ResultSet resultSet = statement.executeQuery(query);
-
-            if (resultSet.next()){
-                String tempId = resultSet.getString(1);
-                String tempName = resultSet.getString(2);
-                String tempAddress = resultSet.getString(3);
-                double tempSalary = resultSet.getDouble(4);
-
-                txtCustomerId.setText(tempId);
-                txtCustomerName.setText(tempName);
-                txtCustomerAddress.setText(tempAddress);
-                txtCustomerSalary.setText(String.valueOf(tempSalary));
-            }else {
-                new Alert(Alert.AlertType.WARNING,"Empty Result set ").show();
-            }
-
-
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }*/
-
-        try {
-          /*  Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/Thogakade",
-                    "root",
-                    "19990202Ravi@:&pra"
-            );*/
             Connection connection = DBConnection.getInstance().getConnection();
             String query ="SELECT * FROM Customer WHERE customerId=?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -69,19 +32,24 @@ public class CustomerSearchFromController {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()){
-                txtCustomerId.setText(resultSet.getString(1));
-                txtCustomerName.setText(resultSet.getString(2));
-                txtCustomerAddress.setText(resultSet.getString(3));
-                txtCustomerSalary.setText(String.valueOf(resultSet.getDouble(4)));
+                Customer customer = new Customer(
+                        resultSet.getString(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getDouble(4)
+
+                );
+               setData(customer);
             }else {
                 new Alert(Alert.AlertType.WARNING,"Empty Result set ").show();
             }
+    }
 
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
-
-
+    void setData(Customer customer){
+        txtCustomerId.setText(customer.getCustomerId());
+        txtCustomerName.setText(customer.getName());
+        txtCustomerAddress.setText(customer.getAddress());
+        txtCustomerSalary.setText(String.valueOf(customer.getSalary()));
     }
 
     public void moveNameOnAction(ActionEvent actionEvent) {

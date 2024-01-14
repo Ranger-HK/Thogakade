@@ -5,6 +5,7 @@ import com.jfoenix.controls.JFXTextField;
 import db.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
+import model.Customer;
 
 import java.sql.*;
 
@@ -21,64 +22,36 @@ public class CustomerSaveFormController {
     public JFXTextField txtCustomerSalary;
     public JFXButton btnSaveCustomer;
 
-    public void SaveCusOnAction(ActionEvent actionEvent) {
-        String id = txtCustomerId.getText();
-        String name = txtCustomerName.getText();
-        String address = txtCustomerAddress.getText();
-        double salary = Double.parseDouble(txtCustomerSalary.getText());
+    public void SaveCusOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
+        Customer c1=new Customer(
+                txtCustomerId.getText(),
+                txtCustomerName.getText(),
+                txtCustomerAddress.getText(),
+                Double.parseDouble(txtCustomerSalary.getText())
+        );
 
-      /*  try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/Thogakade",
-                    "root",
-                    "19990202Ravi@:&pra"
-            );
-            Statement statement = connection.createStatement();
-
-            String sql = "INSERT INTO Customer VALUES (" + "'" + id + "'" + "," + "'" + name + "'" + "," + "'" + address + "'" + "," + "'" + salary + "'" + ")";
-            int i = statement.executeUpdate(sql);
-            if (i > 0) {
-                System.out.println("Saved");
-                txtClear();
-            } else {
-                System.out.println("Try Again..");
-            }
-
-
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }*/
-
-        try {
-            /*Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/Thogakade",
-                    "root",
-                    "19990202Ravi@:&pra"
-            );*/
-            Connection connection = DBConnection.getInstance().getConnection();
-            System.out.println(connection);
-            String query = "INSERT INTO Customer VALUES (?,?,?,?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setObject(1,id);
-            preparedStatement.setObject(2,name);
-            preparedStatement.setObject(3,address);
-            preparedStatement.setObject(4,salary);
-
-            if (preparedStatement.executeUpdate()>0){
+        if (saveCustomer(c1)){
                 new Alert(Alert.AlertType.CONFIRMATION,"Customer Saved").show();
                 txtClear();
 
-            }else {
+        }else {
                 new Alert(Alert.AlertType.WARNING,"Try Again").show();
 
-            }
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
         }
 
+    }
 
+    boolean saveCustomer(Customer customer) throws SQLException, ClassNotFoundException {
+        Connection connection = DBConnection.getInstance().getConnection();
+        System.out.println(connection);
+        String query = "INSERT INTO Customer VALUES (?,?,?,?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setObject(1,customer.getCustomerId());
+        preparedStatement.setObject(2,customer.getName());
+        preparedStatement.setObject(3,customer.getAddress());
+        preparedStatement.setObject(4,customer.getSalary());
+
+        return preparedStatement.executeUpdate()>0;
     }
 
     public void moveNameOnAction(ActionEvent actionEvent) {
