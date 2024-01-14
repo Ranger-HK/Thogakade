@@ -1,5 +1,6 @@
 package controller;
 
+import db.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
@@ -61,12 +62,13 @@ public class SelectAllCustomerFormController {
         tblCustomer.setItems(observableList);*/
 
 
-        Class.forName("com.mysql.cj.jdbc.Driver");
+       /* Class.forName("com.mysql.cj.jdbc.Driver");
         Connection connection = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/Thogakade",
                 "root",
                 "19990202Ravi@:&pra"
-        );
+        );*/
+        Connection connection = DBConnection.getInstance().getConnection();
         String query = "SELECT * FROM Customer";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         ResultSet resultSet = preparedStatement.executeQuery();

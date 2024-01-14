@@ -2,6 +2,7 @@ package controller;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
+import db.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 
@@ -55,12 +56,13 @@ public class CustomerSearchFromController {
         }*/
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+          /*  Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/Thogakade",
                     "root",
                     "19990202Ravi@:&pra"
-            );
+            );*/
+            Connection connection = DBConnection.getInstance().getConnection();
             String query ="SELECT * FROM Customer WHERE customerId=?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setObject(1,customerId);
