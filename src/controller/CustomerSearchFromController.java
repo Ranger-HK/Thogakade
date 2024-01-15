@@ -2,12 +2,11 @@ package controller;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
-import db.DBConnection;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import model.Customer;
 
-import java.sql.*;
+import java.sql.SQLException;
 
 /**
  * @Created By Ravindu Prathibha
@@ -23,29 +22,16 @@ public class CustomerSearchFromController {
     public JFXButton btnSearchCustomer;
 
     public void SearchCusOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
-        String customerId=txtCustomerId.getText();
-
-            Connection connection = DBConnection.getInstance().getConnection();
-            String query ="SELECT * FROM Customer WHERE customerId=?";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setObject(1,customerId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()){
-                Customer customer = new Customer(
-                        resultSet.getString(1),
-                        resultSet.getString(2),
-                        resultSet.getString(3),
-                        resultSet.getDouble(4)
-
-                );
-               setData(customer);
-            }else {
-                new Alert(Alert.AlertType.WARNING,"Empty Result set ").show();
-            }
+        String customerId = txtCustomerId.getText();
+        Customer customer = new CustomerController().getCustomer(customerId);
+        if (customer == null) {
+            new Alert(Alert.AlertType.WARNING, "Empty Result Set").show();
+        } else {
+            setData(customer);
+        }
     }
 
-    void setData(Customer customer){
+    void setData(Customer customer) {
         txtCustomerId.setText(customer.getCustomerId());
         txtCustomerName.setText(customer.getName());
         txtCustomerAddress.setText(customer.getAddress());

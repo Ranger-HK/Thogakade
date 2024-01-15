@@ -30,7 +30,7 @@ public class CustomerSaveFormController {
                 Double.parseDouble(txtCustomerSalary.getText())
         );
 
-        if (saveCustomer(c1)){
+        if (new CustomerController().saveCustomer(c1)){
                 new Alert(Alert.AlertType.CONFIRMATION,"Customer Saved").show();
                 txtClear();
 
@@ -39,19 +39,6 @@ public class CustomerSaveFormController {
 
         }
 
-    }
-
-    boolean saveCustomer(Customer customer) throws SQLException, ClassNotFoundException {
-        Connection connection = DBConnection.getInstance().getConnection();
-        System.out.println(connection);
-        String query = "INSERT INTO Customer VALUES (?,?,?,?)";
-        PreparedStatement preparedStatement = connection.prepareStatement(query);
-        preparedStatement.setObject(1,customer.getCustomerId());
-        preparedStatement.setObject(2,customer.getName());
-        preparedStatement.setObject(3,customer.getAddress());
-        preparedStatement.setObject(4,customer.getSalary());
-
-        return preparedStatement.executeUpdate()>0;
     }
 
     public void moveNameOnAction(ActionEvent actionEvent) {

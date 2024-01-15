@@ -29,7 +29,7 @@ public class CustomerUpdateFormController {
                 Double.parseDouble(txtCustomerSalary.getText())
         );
 
-        if (updateCus(c1)) {
+        if (new CustomerController().updateCustomer(c1)) {
             new Alert(Alert.AlertType.CONFIRMATION, "Update Successful").show();
             txtClear();
 
@@ -40,32 +40,13 @@ public class CustomerUpdateFormController {
 
     }
 
-    public void loadCustomerOnAction(ActionEvent actionEvent) {
-        try {
-            Connection connection = DBConnection.getInstance().getConnection();
-            String query ="SELECT * FROM Customer WHERE customerId=?";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setObject(1,txtCustomerId.getText());
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()){
-                Customer customer = new Customer(
-                        resultSet.getString(1),
-                        resultSet.getString(2),
-                        resultSet.getString(3),
-                        resultSet.getDouble(4)
-
-                );
-                setData(customer);
-
-            }else {
-
-                new Alert(Alert.AlertType.WARNING,"Try Again").show();
-
-            }
-
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
+    public void loadCustomerOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
+        String customerId = txtCustomerId.getText();
+        Customer customer = new CustomerController().getCustomer(customerId);
+        if (customer == null) {
+            new Alert(Alert.AlertType.WARNING, "Empty Result Set").show();
+        } else {
+            setData(customer);
         }
     }
 
@@ -74,18 +55,6 @@ public class CustomerUpdateFormController {
         txtCustomerName.setText(customer.getName());
         txtCustomerAddress.setText(customer.getAddress());
         txtCustomerSalary.setText(String.valueOf(customer.getSalary()));
-    }
-
-    boolean updateCus(Customer customer) throws SQLException, ClassNotFoundException {
-        Connection connection = DBConnection.getInstance().getConnection();
-        String query = "UPDATE Customer SET name=?,address=?,salary=? WHERE customerId=?";
-        PreparedStatement preparedStatement = connection.prepareStatement(query);
-        preparedStatement.setObject(1,customer.getName());
-        preparedStatement.setObject(2,customer.getAddress());
-        preparedStatement.setObject(3,customer.getSalary());
-        preparedStatement.setObject(4,customer.getCustomerId());
-
-        return preparedStatement.executeUpdate()>0;
     }
 
     public void moveAddressOnAction(ActionEvent actionEvent) {

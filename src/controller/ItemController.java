@@ -17,14 +17,14 @@ import java.util.List;
 public class ItemController {
 
     //Item Ids Combo Box Load
-    public List<String>getItemIds() throws SQLException, ClassNotFoundException {
+    public List<String> getItemIds() throws SQLException, ClassNotFoundException {
         Connection connection = DBConnection.getInstance().getConnection();
         String query = "SELECT * FROM Item";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         ResultSet resultSet = preparedStatement.executeQuery();
-        List<String>ids=new ArrayList<>();
+        List<String> ids = new ArrayList<>();
 
-        while (resultSet.next()){
+        while (resultSet.next()) {
             ids.add(
                     resultSet.getString(1)
             );

@@ -49,7 +49,7 @@ public class PlaceOrderFormController {
     public JFXButton btnPlaceOrder;
     public Label lblTotal;
 
-    public void initialize(){
+    public void initialize() {
         try {
             loadDateAndTime();
             loadCustomerIds();
@@ -81,16 +81,16 @@ public class PlaceOrderFormController {
         lblDate.setText(format.format(date));
 
         //Set Time
-        Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO,event -> {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, event -> {
             LocalTime localTime = LocalTime.now();
             lblTime.setText(
-                    localTime.getHour()+" : "+localTime.getMinute()+" : "+localTime.getSecond()
+                    localTime.getHour() + " : " + localTime.getMinute() + " : " + localTime.getSecond()
             );
         }),
-            new KeyFrame(Duration.seconds(1))
-       );
-       timeline.setCycleCount(Animation.INDEFINITE);
-       timeline.play();
+                new KeyFrame(Duration.seconds(1))
+        );
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
 
     }
 
