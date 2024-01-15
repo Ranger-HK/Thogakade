@@ -5,12 +5,16 @@ import com.jfoenix.controls.JFXTextField;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 import model.Customer;
 import model.Item;
+import view.tm.CartTM;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -25,7 +29,7 @@ import java.util.List;
  */
 public class PlaceOrderFormController {
     public AnchorPane txtContext;
-    public TableView tblItem;
+    public TableView <CartTM> tblItem;
     public TableColumn colItemCode;
     public TableColumn colDescription;
     public TableColumn colQty;
@@ -43,12 +47,20 @@ public class PlaceOrderFormController {
     public JFXTextField txtQtyOnHand;
     public JFXTextField txtUnitPrice;
     public JFXTextField txtQty;
-    public JFXButton btnAddToCart;
     public JFXButton btnClear;
     public JFXButton btnPlaceOrder;
     public Label lblTotal;
+    public JFXButton btnAddToCart;
+
 
     public void initialize() {
+
+        colItemCode.setCellValueFactory(new PropertyValueFactory<>("code"));
+        colDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+        colQty.setCellValueFactory(new PropertyValueFactory<>("qty"));
+        colUnitPrice.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
+        colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
+
         try {
             loadDateAndTime();
             loadCustomerIds();
@@ -141,11 +153,84 @@ public class PlaceOrderFormController {
 
     }
 
+    //Add To Table Select Data From TextField
+
+    ObservableList <CartTM> observableList = FXCollections.observableArrayList();
+
     public void btnAddToCartOnAction(ActionEvent actionEvent) {
+        String description = txtDescription.getText();
+        int qtyOnHand = Integer.parseInt(txtQtyOnHand.getText());
+        double unitPrice = Double.parseDouble(txtUnitPrice.getText());
+        int qtyForCustomer = Integer.parseInt(txtQty.getText());
+        double total = qtyForCustomer*unitPrice;
+
+        if (qtyOnHand<qtyForCustomer){
+            new Alert(Alert.AlertType.WARNING,"Invalid Qty").show();
+            return;
+        }
+
+
+        CartTM cartTM = new CartTM(
+                cmbItem.getValue(),
+                description,
+                qtyForCustomer,
+                unitPrice,
+                total
+        );
+
+        int rowNumber=isExists(cartTM);
+
+        if (isExists(cartTM)==-1) {
+            observableList.add(cartTM);
+
+        }else {
+            CartTM tempTm = observableList.get(rowNumber);
+            CartTM newTm = new CartTM(
+                    tempTm.getCode(),
+                    tempTm.getDescription(),
+                    tempTm.getQty()+qtyForCustomer,
+                    unitPrice,
+                    total+tempTm.getTotal()
+            );
+
+            if (qtyOnHand<tempTm.getQty()){
+                new Alert(Alert.AlertType.WARNING,"Invalid Qty").show();
+                return;
+            }
+
+            observableList.remove(rowNumber);
+            observableList.add(newTm);
+        }
+
+        tblItem.setItems(observableList);
+        calculateCost();
+
     }
+
+    //Fix Row Case
+    private int isExists(CartTM tm){
+        for (int i=0;i<observableList.size();i++){
+            if (tm.getCode().equals(observableList.get(i).getCode())){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    void calculateCost(){
+        double ttl=0;
+        for (CartTM tms:observableList
+             ) {
+            ttl+=tms.getTotal();
+
+        }
+        lblTotal.setText(ttl+" /=");
+    }
+
 
     public void btnClearOnAction(ActionEvent actionEvent) {
     }
+
 
     public void btnPlaceOrderOnAction(ActionEvent actionEvent) {
 
