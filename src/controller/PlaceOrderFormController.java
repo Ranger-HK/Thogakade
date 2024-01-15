@@ -13,9 +13,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Created By Ravindu Prathibha
@@ -48,7 +50,28 @@ public class PlaceOrderFormController {
     public Label lblTotal;
 
     public void initialize(){
-        loadDateAndTime();
+        try {
+            loadDateAndTime();
+            loadCustomerIds();
+            loadItemIds();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Item Ids Combo Box Load
+    private void loadItemIds() throws SQLException, ClassNotFoundException {
+        List<String> itemIds = new ItemController().getItemIds();
+        cmbItem.getItems().addAll(itemIds);
+    }
+
+    //Customer Ids Combo Box Load
+    private void loadCustomerIds() throws SQLException, ClassNotFoundException {
+        List<String> customerIds = new CustomerController().getCustomerIds();
+        cmbCustomer.getItems().addAll(customerIds);
     }
 
     private void loadDateAndTime() {

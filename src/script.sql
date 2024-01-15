@@ -70,3 +70,8 @@ SELECT * FROM Customer;
 SELECT * FROM `Order`;
 SELECT * FROM Item;
 SELECT * FROM OrderDetail;
+
+
+INSERT INTO Item VALUES ("I-001","Apple",10,50);
+INSERT INTO Item VALUES ("I-002","Banana",20,110);
+INSERT INTO Item VALUES ("I-003","Cake",75,25);
