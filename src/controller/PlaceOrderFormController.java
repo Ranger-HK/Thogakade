@@ -53,6 +53,9 @@ public class PlaceOrderFormController {
     public JFXButton btnAddToCart;
 
 
+
+    int cartSelectedRowForRemove = -1;
+
     public void initialize() {
 
         colItemCode.setCellValueFactory(new PropertyValueFactory<>("code"));
@@ -94,6 +97,11 @@ public class PlaceOrderFormController {
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
+        }));
+
+        //table row remove
+        tblItem.getSelectionModel().selectedIndexProperty().addListener(((observable, oldValue, newValue) -> {
+            cartSelectedRowForRemove = (int)newValue;
         }));
     }
 
@@ -217,6 +225,7 @@ public class PlaceOrderFormController {
         return -1;
     }
 
+    //calculate total
     void calculateCost(){
         double ttl=0;
         for (CartTM tms:observableList
@@ -228,7 +237,16 @@ public class PlaceOrderFormController {
     }
 
 
+    //delete table row
     public void btnClearOnAction(ActionEvent actionEvent) {
+        if (cartSelectedRowForRemove==-1){
+            new Alert(Alert.AlertType.WARNING,"Please Select a Row").show();
+        }else {
+            observableList.remove(cartSelectedRowForRemove);
+            calculateCost();
+            tblItem.refresh();
+        }
+
     }
 
 
