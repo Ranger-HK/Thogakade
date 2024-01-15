@@ -2,12 +2,20 @@ package controller;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
+import javafx.util.Duration;
+
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.util.Date;
 
 /**
  * @Created By Ravindu Prathibha
@@ -38,6 +46,30 @@ public class PlaceOrderFormController {
     public JFXButton btnClear;
     public JFXButton btnPlaceOrder;
     public Label lblTotal;
+
+    public void initialize(){
+        loadDateAndTime();
+    }
+
+    private void loadDateAndTime() {
+        //Set Date
+        Date date = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        lblDate.setText(format.format(date));
+
+        //Set Time
+        Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO,event -> {
+            LocalTime localTime = LocalTime.now();
+            lblTime.setText(
+                    localTime.getHour()+" : "+localTime.getMinute()+" : "+localTime.getSecond()
+            );
+        }),
+            new KeyFrame(Duration.seconds(1))
+       );
+       timeline.setCycleCount(Animation.INDEFINITE);
+       timeline.play();
+
+    }
 
     public void btnAddToCartOnAction(ActionEvent actionEvent) {
     }
