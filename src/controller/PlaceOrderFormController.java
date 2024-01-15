@@ -6,12 +6,11 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
+import model.Customer;
+import model.Item;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -32,11 +31,11 @@ public class PlaceOrderFormController {
     public TableColumn colQty;
     public TableColumn colUnitPrice;
     public TableColumn colTotal;
-    public ComboBox cmbCustomer;
+    public ComboBox<String> cmbCustomer;
     public Label lblOrderId;
     public Label lblDate;
     public Label lblTime;
-    public ComboBox cmbItem;
+    public ComboBox<String> cmbItem;
     public JFXTextField txtCustomerName;
     public JFXTextField txtCustomerAddress;
     public JFXTextField txtCustomerSalary;
@@ -59,6 +58,54 @@ public class PlaceOrderFormController {
             throwables.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        }
+
+        //Load Customer ComboBox Data To TextField
+        cmbCustomer.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
+            try {
+                setCustomerData(newValue);
+
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }));
+
+        //Load Item ComboBox Data To TextField
+        cmbItem.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
+            try {
+                setItemData(newValue);
+
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }));
+    }
+
+    //Load Item ComboBox Data To TextField
+    private void setItemData(String orderId) throws SQLException, ClassNotFoundException {
+        Item item = new ItemController().getItem(orderId);
+        if (item == null) {
+            new Alert(Alert.AlertType.WARNING, "Empty Result Set");
+        } else {
+            txtDescription.setText(item.getDescription());
+            txtQtyOnHand.setText(String.valueOf(item.getQtyOnHand()));
+            txtUnitPrice.setText(String.valueOf(item.getUnitPrice()));
+        }
+    }
+
+    //Load Customer ComboBox Data To TextField
+    private void setCustomerData(String customerId) throws SQLException, ClassNotFoundException {
+        Customer customer = new CustomerController().getCustomer(customerId);
+        if (customer == null) {
+            new Alert(Alert.AlertType.WARNING, "Empty Result Set");
+        } else {
+            txtCustomerName.setText(customer.getName());
+            txtCustomerAddress.setText(customer.getAddress());
+            txtCustomerSalary.setText(String.valueOf(customer.getSalary()));
         }
     }
 

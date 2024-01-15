@@ -1,6 +1,7 @@
 package controller;
 
 import db.DBConnection;
+import model.Item;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -30,6 +31,29 @@ public class ItemController {
             );
         }
         return ids;
+    }
+
+
+    //Use For Load Combo Box Data To TextField
+    public Item getItem(String id) throws SQLException, ClassNotFoundException {
+        Connection connection = DBConnection.getInstance().getConnection();
+        String query = "SELECT * FROM Item WHERE code=?";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setObject(1, id);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (resultSet.next()) {
+            return new Item(
+                    resultSet.getString(1),
+                    resultSet.getString(2),
+                    resultSet.getInt(3),
+                    resultSet.getDouble(4)
+
+            );
+
+        } else {
+            return null;
+        }
     }
 
 

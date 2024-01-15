@@ -35,6 +35,7 @@ public class CustomerController implements CustomerService {
     }
 
 
+    //Save Customer
     @Override
     public boolean saveCustomer(Customer customer) throws SQLException, ClassNotFoundException {
         Connection connection = DBConnection.getInstance().getConnection();
@@ -48,6 +49,7 @@ public class CustomerController implements CustomerService {
         return preparedStatement.executeUpdate()>0;
     }
 
+    //Update Customer
     @Override
     public boolean updateCustomer(Customer customer) throws SQLException, ClassNotFoundException {
         Connection connection = DBConnection.getInstance().getConnection();
@@ -61,6 +63,7 @@ public class CustomerController implements CustomerService {
         return preparedStatement.executeUpdate()>0;
     }
 
+    //Delete Customer
     @Override
     public boolean deleteCustomer(String id) throws SQLException, ClassNotFoundException {
         if (DBConnection.getInstance().getConnection().prepareStatement("DELETE FROM Customer WHERE customerId='" + id + "'").executeUpdate()>0){
@@ -70,6 +73,7 @@ public class CustomerController implements CustomerService {
         }
     }
 
+    //Use For Load Combo Box Data To Text Field
     @Override
     public Customer getCustomer(String id) throws SQLException, ClassNotFoundException {
         Connection connection = DBConnection.getInstance().getConnection();
@@ -92,6 +96,7 @@ public class CustomerController implements CustomerService {
         }
     }
 
+    //Load Table To Customer
     @Override
     public ArrayList<Customer> getAllCustomers() throws SQLException, ClassNotFoundException {
         Connection connection = DBConnection.getInstance().getConnection();
