@@ -14,11 +14,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 import model.Customer;
 import model.Item;
+import model.ItemDetails;
+import model.Order;
 import view.tm.CartTM;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +32,7 @@ import java.util.List;
  */
 public class PlaceOrderFormController {
     public AnchorPane txtContext;
-    public TableView <CartTM> tblItem;
+    public TableView<CartTM> tblItem;
     public TableColumn colItemCode;
     public TableColumn colDescription;
     public TableColumn colQty;
@@ -53,8 +56,8 @@ public class PlaceOrderFormController {
     public JFXButton btnAddToCart;
 
 
-
     int cartSelectedRowForRemove = -1;
+    ObservableList<CartTM> observableList = FXCollections.observableArrayList();
 
     public void initialize() {
 
@@ -101,7 +104,7 @@ public class PlaceOrderFormController {
 
         //table row remove
         tblItem.getSelectionModel().selectedIndexProperty().addListener(((observable, oldValue, newValue) -> {
-            cartSelectedRowForRemove = (int)newValue;
+            cartSelectedRowForRemove = (int) newValue;
         }));
     }
 
@@ -141,6 +144,8 @@ public class PlaceOrderFormController {
         cmbCustomer.getItems().addAll(customerIds);
     }
 
+    //Add To Table Select Data From TextField
+
     private void loadDateAndTime() {
         //Set Date
         Date date = new Date();
@@ -161,19 +166,15 @@ public class PlaceOrderFormController {
 
     }
 
-    //Add To Table Select Data From TextField
-
-    ObservableList <CartTM> observableList = FXCollections.observableArrayList();
-
     public void btnAddToCartOnAction(ActionEvent actionEvent) {
         String description = txtDescription.getText();
         int qtyOnHand = Integer.parseInt(txtQtyOnHand.getText());
         double unitPrice = Double.parseDouble(txtUnitPrice.getText());
         int qtyForCustomer = Integer.parseInt(txtQty.getText());
-        double total = qtyForCustomer*unitPrice;
+        double total = qtyForCustomer * unitPrice;
 
-        if (qtyOnHand<qtyForCustomer){
-            new Alert(Alert.AlertType.WARNING,"Invalid Qty").show();
+        if (qtyOnHand < qtyForCustomer) {
+            new Alert(Alert.AlertType.WARNING, "Invalid Qty").show();
             return;
         }
 
@@ -186,23 +187,23 @@ public class PlaceOrderFormController {
                 total
         );
 
-        int rowNumber=isExists(cartTM);
+        int rowNumber = isExists(cartTM);
 
-        if (isExists(cartTM)==-1) {
+        if (isExists(cartTM) == -1) {
             observableList.add(cartTM);
 
-        }else {
+        } else {
             CartTM tempTm = observableList.get(rowNumber);
             CartTM newTm = new CartTM(
                     tempTm.getCode(),
                     tempTm.getDescription(),
-                    tempTm.getQty()+qtyForCustomer,
+                    tempTm.getQty() + qtyForCustomer,
                     unitPrice,
-                    total+tempTm.getTotal()
+                    total + tempTm.getTotal()
             );
 
-            if (qtyOnHand<tempTm.getQty()){
-                new Alert(Alert.AlertType.WARNING,"Invalid Qty").show();
+            if (qtyOnHand < tempTm.getQty()) {
+                new Alert(Alert.AlertType.WARNING, "Invalid Qty").show();
                 return;
             }
 
@@ -216,9 +217,9 @@ public class PlaceOrderFormController {
     }
 
     //Fix Row Case
-    private int isExists(CartTM tm){
-        for (int i=0;i<observableList.size();i++){
-            if (tm.getCode().equals(observableList.get(i).getCode())){
+    private int isExists(CartTM tm) {
+        for (int i = 0; i < observableList.size(); i++) {
+            if (tm.getCode().equals(observableList.get(i).getCode())) {
                 return i;
             }
         }
@@ -226,22 +227,22 @@ public class PlaceOrderFormController {
     }
 
     //calculate total
-    void calculateCost(){
-        double ttl=0;
-        for (CartTM tms:observableList
-             ) {
-            ttl+=tms.getTotal();
+    void calculateCost() {
+        double ttl = 0;
+        for (CartTM tms : observableList
+        ) {
+            ttl += tms.getTotal();
 
         }
-        lblTotal.setText(ttl+" /=");
+        lblTotal.setText(ttl + " /=");
     }
 
 
     //delete table row
     public void btnClearOnAction(ActionEvent actionEvent) {
-        if (cartSelectedRowForRemove==-1){
-            new Alert(Alert.AlertType.WARNING,"Please Select a Row").show();
-        }else {
+        if (cartSelectedRowForRemove == -1) {
+            new Alert(Alert.AlertType.WARNING, "Please Select a Row").show();
+        } else {
             observableList.remove(cartSelectedRowForRemove);
             calculateCost();
             tblItem.refresh();
@@ -250,7 +251,36 @@ public class PlaceOrderFormController {
     }
 
 
+    //Save order
     public void btnPlaceOrderOnAction(ActionEvent actionEvent) {
+        ArrayList<ItemDetails> itemDetails = new ArrayList<>();
+        double ttl = 0;
+        for (CartTM tempTm : observableList
+        ) {
+            ttl += tempTm.getTotal();
+            itemDetails.add(new ItemDetails(
+                    tempTm.getCode(),
+                    tempTm.getUnitPrice(),
+                    tempTm.getQty()
+            ));
+        }
+
+        Order order = new Order(
+                "O-001",
+                cmbCustomer.getValue(),
+                lblDate.getText(),
+                lblTime.getText(),
+                ttl,
+                itemDetails
+        );
+
+        if (new OrderController().placeOrder(order)) {
+            new Alert(Alert.AlertType.CONFIRMATION, "Success").show();
+        } else {
+            new Alert(Alert.AlertType.WARNING, "Try Again").show();
+
+        }
+
 
     }
 }
