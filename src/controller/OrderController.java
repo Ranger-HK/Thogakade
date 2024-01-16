@@ -44,8 +44,10 @@ public class OrderController {
 
     //Save Order
     public boolean placeOrder(Order order) {
+        Connection connection=null;
         try {
-            Connection connection = DBConnection.getInstance().getConnection();
+            connection = DBConnection.getInstance().getConnection();
+            connection.setAutoCommit(false);
             String query = "INSERT INTO `Order` VALUES (?,?,?,?,?)";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setObject(1, order.getOrderID());
@@ -55,10 +57,16 @@ public class OrderController {
             preparedStatement.setObject(5, order.getCost());
 
             if (preparedStatement.executeUpdate() > 0){
-
-               return saveOrderDetail(order.getOrderID(),order.getItemDetails());
+              if (saveOrderDetail(order.getOrderID(),order.getItemDetails())){
+                  connection.commit();
+                  return true;
+              }else {
+                  connection.rollback();
+                  return false;
+              }
 
             }else {
+                connection.rollback();
                 return false;
             }
 
@@ -66,8 +74,13 @@ public class OrderController {
             throwables.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        }finally {
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
         }
-
         return false;
     }
 
