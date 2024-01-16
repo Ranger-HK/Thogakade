@@ -6,6 +6,7 @@ import model.Order;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -15,6 +16,31 @@ import java.util.ArrayList;
  * @project Thogakade
  */
 public class OrderController {
+
+    public String getOrderId() throws SQLException, ClassNotFoundException {
+        Connection connection = DBConnection.getInstance().getConnection();
+        String query = "SELECT * FROM `Order` ORDER BY orderId DESC LIMIT 1";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (resultSet.next()) {
+            int tempId = Integer.parseInt(resultSet.getString(1).split("-")[1]);
+            tempId = tempId+1;
+
+            if (tempId < 9) {
+                return "0-00" + tempId;
+            } else if (tempId < 99) {
+                return "0-0" + tempId;
+            } else {
+                return "0-" + tempId;
+            }
+        } else {
+            return "0-001";
+        }
+
+    }
+
+
 
     //Save Order
     public boolean placeOrder(Order order) {
@@ -59,11 +85,26 @@ public class OrderController {
 
             if (preparedStatement.executeUpdate() > 0) {
 
+                if (updateQty(temp.getItemCode(),temp.getQtyForSell())){
+
+                }else {
+                    return false;
+                }
+
             } else {
                 return false;
             }
 
         }
         return true;
+    }
+
+
+    private boolean updateQty(String itemCode,int qty) throws SQLException, ClassNotFoundException {
+        Connection connection = DBConnection.getInstance().getConnection();
+        String query = "UPDATE item SET qtyOnHand=(qtyOnHand-"+qty+") WHERE code='"+itemCode+"'";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        return preparedStatement.executeUpdate()>0;
+
     }
 }

@@ -71,6 +71,7 @@ public class PlaceOrderFormController {
             loadDateAndTime();
             loadCustomerIds();
             loadItemIds();
+            setOrderId();
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -106,6 +107,16 @@ public class PlaceOrderFormController {
         tblItem.getSelectionModel().selectedIndexProperty().addListener(((observable, oldValue, newValue) -> {
             cartSelectedRowForRemove = (int) newValue;
         }));
+    }
+
+    private void setOrderId() {
+        try {
+            lblOrderId.setText(new OrderController().getOrderId());
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     //Load Item ComboBox Data To TextField
@@ -266,7 +277,7 @@ public class PlaceOrderFormController {
         }
 
         Order order = new Order(
-                "O-001",
+                lblOrderId.getText(),
                 cmbCustomer.getValue(),
                 lblDate.getText(),
                 lblTime.getText(),
@@ -276,6 +287,8 @@ public class PlaceOrderFormController {
 
         if (new OrderController().placeOrder(order)) {
             new Alert(Alert.AlertType.CONFIRMATION, "Success").show();
+            setOrderId();
+
         } else {
             new Alert(Alert.AlertType.WARNING, "Try Again").show();
 
