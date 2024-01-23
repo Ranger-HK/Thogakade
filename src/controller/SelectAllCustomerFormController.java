@@ -34,8 +34,6 @@ public class SelectAllCustomerFormController {
             setCustomersToTable(new CustomerController().getAllCustomers());
 
            /* ArrayList<Customer> allCustomers = CustomerController.getAllCustomers();
-
-
             ObservableList<CustomerTM> observableList = FXCollections.observableArrayList();
             for (Customer allCustomer : allCustomers) {
                 observableList.add(new CustomerTM(
