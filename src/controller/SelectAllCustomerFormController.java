@@ -31,7 +31,23 @@ public class SelectAllCustomerFormController {
             colCusAddress.setCellValueFactory(new PropertyValueFactory<>("address"));
             coCusSalary.setCellValueFactory(new PropertyValueFactory<>("salary"));
 
-           setCustomersToTable(new CustomerController().getAllCustomers());
+            setCustomersToTable(new CustomerController().getAllCustomers());
+
+           /* ArrayList<Customer> allCustomers = CustomerController.getAllCustomers();
+
+
+            ObservableList<CustomerTM> observableList = FXCollections.observableArrayList();
+            for (Customer allCustomer : allCustomers) {
+                observableList.add(new CustomerTM(
+                        allCustomer.getCustomerId(),
+                        allCustomer.getName(),
+                        allCustomer.getAddress(),
+                        allCustomer.getSalary()
+                ));
+            }
+            tblCustomer.setItems(observableList);*/
+
+
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -40,12 +56,27 @@ public class SelectAllCustomerFormController {
         }
     }
 
-    private void setCustomersToTable(ArrayList<Customer> customers) {
+    private void setCustomersToTable(ArrayList<Customer> allCustomers) {
         ObservableList<CustomerTM> observableList = FXCollections.observableArrayList();
+        for (Customer allCustomer : allCustomers) {
+            observableList.add(new CustomerTM(
+                    allCustomer.getCustomerId(),
+                    allCustomer.getName(),
+                    allCustomer.getAddress(),
+                    allCustomer.getSalary()
+            ));
+        }
+
+        tblCustomer.setItems(observableList);
+
+
+       /* ObservableList<CustomerTM> observableList = FXCollections.observableArrayList();
         customers.forEach(e->{
             observableList.add(new CustomerTM(e.getCustomerId(),e.getName(),e.getAddress(),e.getSalary()));
         });
-        tblCustomer.setItems(observableList);
+        tblCustomer.setItems(observableList);*/
+
+
     }
 
 }
