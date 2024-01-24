@@ -66,11 +66,18 @@ public class CustomerController implements CustomerService {
     //Delete Customer
     @Override
     public boolean deleteCustomer(String id) throws SQLException, ClassNotFoundException {
-        if (DBConnection.getInstance().getConnection().prepareStatement("DELETE FROM Customer WHERE customerId='" + id + "'").executeUpdate()>0){
+       /* if (DBConnection.getInstance().getConnection().prepareStatement("DELETE FROM Customer WHERE customerId='" + id + "'").executeUpdate()>0){
              return true;
         }else {
              return false;
         }
+*/
+        Connection connection = DBConnection.getInstance().getConnection();
+        String query = "DELETE FROM Customer WHERE customerId=?";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setObject(1,id);
+
+        return preparedStatement.executeUpdate()>0;
     }
 
     //Use For Load Combo Box Data To Text Field
